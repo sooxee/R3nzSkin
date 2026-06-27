@@ -9,16 +9,10 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
       - name: Sync fork
-        uses: wei/pull@v2
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: "Sync fork with upstream"
-          pr_body: "Automatically sync fork with upstream"
-          base: main
-          head: main
+          upstream_sync_repo: hydy100/R3nzSkin
+          upstream_sync_branch: main
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
