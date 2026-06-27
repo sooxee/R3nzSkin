@@ -3,16 +3,22 @@ name: Sync Fork with Upstream
 on:
   schedule:
     - cron: '0 0 * * *'
-  workflow_dispatch:    
+  workflow_dispatch:
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync fork
-        uses: tgymichi/fork-sync@v1.5
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          owner: hydy100
-          repo: R3nzSkin
-          head: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Sync fork
+        uses: wei/pull@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: "Sync fork with upstream"
+          pr_body: "Automatically sync fork with upstream"
           base: main
+          head: main
