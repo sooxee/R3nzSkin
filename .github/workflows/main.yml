@@ -2,17 +2,17 @@ name: Sync Fork with Upstream
 
 on:
   schedule:
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: '0 0 * * *'  # 每天 UTC 0:00 (北京时间早上8点) 自动运行
+  workflow_dispatch:     # 允许手动触发
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync fork
-        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+      - name: Fork Sync
+        uses: tgymnich/fork-sync@v1.2.1
         with:
-          upstream_sync_repo: hydy100/R3nzSkin
-          upstream_sync_branch: main
-          target_sync_branch: main
-          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: hydy100
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          head: main
+          base: main
