@@ -1,23 +1,37 @@
-name: Sync Fork with Upstream
+name: Auto Sync Fork
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 每天 UTC 0:00 自动运行
+    - cron: '0 0 * * *'  # 每天 UTC 0:00 (北京时间早上8点) 自动运行
   workflow_dispatch:     # 允许手动触发
-
-# 👇 增加这部分：明确赋予读写权限
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Fork Sync
-        uses: tgymnich/fork-sync@v1.2.1
+      # 1. 下载你的仓库代码到运行环境
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          owner: hydy100
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          head: main
-          base: main
+          fetch-depth: 0  # 获取所有历史记录，防止合并报错
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 2. 使用纯 Git 命令同步上游代码
+      - name: Sync with upstream
+        run: |
+          # 配置 Git 用户信息（GitHub Actions 运行 git commit 必须需要这个）
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # 添加原仓库为 upstream（上游）
+          git remote add upstream https://github.com/hydy100/R3nzSkin.git
+          
+          # 拉取原仓库的最新代码
+          git fetch upstream
+          
+          # 切换到你的 main 分支，并合并原仓库的 main 分支
+          git checkout main
+          git merge upstream/main --no-edit
+          
+          # 将合并后的最新代码推送到你自己的仓库
+          git push origin main
